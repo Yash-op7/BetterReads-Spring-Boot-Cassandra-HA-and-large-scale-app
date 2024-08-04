@@ -6,10 +6,11 @@ This is a end-to-end Spring Boot book tracking application with a vast database 
 ### Technologies used:
 - Cassandra
     - Motivation: To build for scalability, performance and reliability that Cassandra provides, this app is supposed to be highly performant even with a large number of users, therefore I used Cassandra because:
-        - its a NoSQL DB so we don't have to do sacrifice performance in expenisve joins as our dataset is vast
+        - its a NoSQL DB so we don't have to do sacrifice performance in expenisve joins as our dataset is vast, suppots key-based lookup
         - store metadata on millions of books
         - very flexible, document store
         - scales up or down elastically based on the load
+        - a distributed database, bunch of nodes in a cluster which makes it reliable, fault tolerant and scalable
     - using a hosted Cassandra instance via AstraDB by DataStacks
 - Spring Boot
 - Spring Security:
@@ -52,5 +53,20 @@ Let's first identify the UX, because it gives a good idea about:
 
 
 ## 2. System Design
+**Some non-functional requirements/goals that we want to achieve in our application:**
+1. Should be performant
+2. Can handle large data
+3. Reliable, HA
+4. Backend Focussed (personal goal, not wasting time with CSS for now, will do that later in free time)
+
+**Architecture:**
+- **Spring Boot** backend with Spring MVC to serve HTML pages to users
+- **Spring Security** for login
+- A non relational database for high performance and reliablity as RDBMS are single store so no fault tolerance, so we use **Apache Cassandra** a reliable NoSQl, performant database for large data.
+- **Spring Data for Apache Cassandra** to connect to DB
+- **Open Library API** for search functionality (Apache is not meant to be used for full table searches, it allows lookup of data but not fast 'like' queries similar to RDBMS, to search in Cassandra we can use Apache Lucene for indexes but I will make one exception and implement it later(maybe) as it will add lot of complexity)
 
 ## 3. Application Architecure and Data Model Architecture
+![architecture_diagram](assets/architecture_diagram.png)
+
+{{< caption >}}The [Amazon Rainforest](https://en.wikipedia.org/wiki/Amazon_rainforest) contains a multitude of species.{{< /caption >}}
