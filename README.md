@@ -66,7 +66,35 @@ Let's first identify the UX, because it gives a good idea about:
 - **Spring Data for Apache Cassandra** to connect to DB
 - **Open Library API** for search functionality (Apache is not meant to be used for full table searches, it allows lookup of data but not fast 'like' queries similar to RDBMS, to search in Cassandra we can use Apache Lucene for indexes but I will make one exception and implement it later(maybe) as it will add lot of complexity)
 
-## 3. Application Architecure and Data Model Architecture
+## 3. Application Architecture
 ![architecture_diagram](assets/architecture_diagram.png)
 
-{{< caption >}}The [Amazon Rainforest](https://en.wikipedia.org/wiki/Amazon_rainforest) contains a multitude of species.{{< /caption >}}
+Architecure Diagram (built on eraser.io)
+
+To optimze for low latency, we identify bottlenecks, this applications's latency is going to be directly correlated with the database's latency, so the only optimizable latency arises from retrieving information from the database. This is our bottleneck. So we will design the schemas in such a way that looking up data will be really performant.
+
+How to ensure reliablity?
+Apache Cassandra is a super reliable database, becaues its not just a single node, it runs multiple nodes in a cluster and synchronizes them, so we have a reliable data store. And for our application's reliability, we will create a stateless application apart from the login session in Spring Security, so when load increases we can just spin up mulitple spring boot instances and have a firewall at the gateway for load balancing and all of them will connect to the same db cluster, so this is also accounting for scalability. Only uncertainity in reliablity is coming from the Open Library Search API which we anticipate to be performant and reliable.
+
+## 4. Data Model ER Model
+
+### Entities:
+1. Book:
+    - date
+    - id
+    - name
+    - desc
+    - cover 
+2. Author:
+    - id
+    - name
+    - img
+3. User:
+    - id
+    - name
+4. User_Book
+    - status
+    - start_date
+    - end_date
+    - rating
+![Entity Relationship Model](assets/er_model.png)
