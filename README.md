@@ -1,4 +1,4 @@
-# BetterReads-Spring-Boot-Cassandra-HA-and-large-scale-app
+cql_example1# BetterReads-Spring-Boot-Cassandra-HA-and-large-scale-app
 Built an enterprise grade application that is highly available, scalable to millions of users, can handle large amounts of data and is highly performant with low latency.
 
 This is a end-to-end Spring Boot book tracking application with a vast database on all the books built using Java Spring Boot and Cassandra which allows the user to track the book they are currently reading or have read, give ratings and reviews, have access to a vast catalog of all published books and more.
@@ -135,3 +135,16 @@ Some considerations:
 **Answer:** Realistitcally speaking one author cannot write so many books that it overloads our partition and a reader (user) cannot read so many books either even though people do read lots of books but its isn't much here, so unless there is a malicious actor try to overload a partiiton by garbage data (which can be prevented by adding some application controls to handlle that, rate limiting) there should not be hotspots.
 - **Concern 2** What if in the future we have a lot more users and hotspots start to occur?
 **Answer:** We can solve this by having a new data element such as `year` and partition based on that to ensure almost consistent partition, more sophisticated partition strategies can be developed as well. This may decrease performance but thats how it is, its a tradeoff between storing in different partitions or in one partition.
+
+# Starting development
+## Setting up hosted Cassandra instance
+
+- Go to https://astra.datastax.com/, sign in
+- Create a new DB
+- Go to CQL console
+
+### Some CQL queries (personal recap):
+- `describe keyspaces;`
+![cql_example1](assets/cql_example1.png)
+- `describe keyspace_name`
+![cql_example1](assets/cql_example2.png)
