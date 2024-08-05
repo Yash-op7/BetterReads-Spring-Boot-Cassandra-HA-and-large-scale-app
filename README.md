@@ -100,6 +100,8 @@ Apache Cassandra is a super reliable database, becaues its not just a single nod
 ![Entity Relationship Model](assets/er_model.png)
 *Entity Relationship Model (rough)*
 
+⭐️ We aren't going to make a RDBMS data model, we will store the data in exactly the format that we need for our queries so that there are no joins, this will cause redundant data and denormalization but that's the power we get with Cassandra.
+
 ### What are the queries we need to perform on our Cassandra database and their Chebotko Diagrams for identifying the keys, sorting order, clustering info, etc:
 **⭐️ In Cassandra primary keys are hashed to a value which decides which partition to store the object into**
 1. `books_by_id()`
@@ -129,7 +131,7 @@ we won't have a authorId as a foreign key because this isn't a relational storag
 We only care about how we fetch the data not how the data is stored in its ideal state because the data will be replicated and we have large amounts of data
 
 Some considerations:
-1. Is it possible for there to be too many books in one partition or hotspots in our parittioning strategy?
-Ans: Realistitcally speaking one author cannot write so many books that it overloads our partition and a reader (user) cannot read so many books either even though people do read lots of books but its isn't much here, so unless there is a malicious actor try to overload a partiiton by garbage data (which can be prevented by adding some application controls to handlle that, rate limiting) there should not be hotspots.
-2. What if in the future we have a lot more users and hotspots start to occur?
-Ans: We can solve this by having a new data element such as `year` and partition based on that to ensure almost consistent partition, more sophisticated partition strategies can be developed as well.
+- **Concern 1** Is it possible for there to be too many books in one partition or hotspots in our parittioning strategy?
+**Answer:** Realistitcally speaking one author cannot write so many books that it overloads our partition and a reader (user) cannot read so many books either even though people do read lots of books but its isn't much here, so unless there is a malicious actor try to overload a partiiton by garbage data (which can be prevented by adding some application controls to handlle that, rate limiting) there should not be hotspots.
+- **Concern 2** What if in the future we have a lot more users and hotspots start to occur?
+**Answer:** We can solve this by having a new data element such as `year` and partition based on that to ensure almost consistent partition, more sophisticated partition strategies can be developed as well. This may decrease performance but thats how it is, its a tradeoff between storing in different partitions or in one partition.
