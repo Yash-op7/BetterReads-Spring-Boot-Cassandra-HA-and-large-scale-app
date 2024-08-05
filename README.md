@@ -157,3 +157,5 @@ Some considerations:
 
 **We can create tables using CQL but what we'll do is create a Spring Boot application and use Spring Data Cassandra to create entity objects and have that create those tables for me similar to ORM, but here its not object relational mapping, it is more similar to the @AddEntity annotation in Hibernate, create the entity and let it define the schema for it.**
 
+## Created a new Spring Boot application
+## Downloaded the secure connection bundle for the region from astra db
