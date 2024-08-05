@@ -11,7 +11,7 @@ This is a end-to-end Spring Boot book tracking application with a vast database 
         - very flexible, document store
         - scales up or down elastically based on the load
         - a distributed database, bunch of nodes in a cluster which makes it reliable, fault tolerant and scalable
-    - using a hosted Cassandra instance via AstraDB by DataStacks
+    - using a hosted Cassandra instance via AstraDB by DataStax
 - Spring Boot
 - Spring Security:
     - For a OAuth login via Github functionality
