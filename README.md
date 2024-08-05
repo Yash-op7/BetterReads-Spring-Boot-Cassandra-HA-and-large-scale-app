@@ -1,4 +1,4 @@
-cql_example1# BetterReads-Spring-Boot-Cassandra-HA-and-large-scale-app
+# BetterReads-Spring-Boot-Cassandra-HA-and-large-scale-app
 Built an enterprise grade application that is highly available, scalable to millions of users, can handle large amounts of data and is highly performant with low latency.
 
 This is a end-to-end Spring Boot book tracking application with a vast database on all the books built using Java Spring Boot and Cassandra which allows the user to track the book they are currently reading or have read, give ratings and reviews, have access to a vast catalog of all published books and more.
