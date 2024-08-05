@@ -69,16 +69,16 @@ Let's first identify the UX, because it gives a good idea about:
 ## 3. Application Architecture
 ![architecture_diagram](assets/architecture_diagram.png)
 
-Architecure Diagram (built on eraser.io)
+*Architecure Diagram (built on eraser.io)*
 
 To optimze for low latency, we identify bottlenecks, this applications's latency is going to be directly correlated with the database's latency, so the only optimizable latency arises from retrieving information from the database. This is our bottleneck. So we will design the schemas in such a way that looking up data will be really performant.
 
 How to ensure reliablity?
 Apache Cassandra is a super reliable database, becaues its not just a single node, it runs multiple nodes in a cluster and synchronizes them, so we have a reliable data store. And for our application's reliability, we will create a stateless application apart from the login session in Spring Security, so when load increases we can just spin up mulitple spring boot instances and have a firewall at the gateway for load balancing and all of them will connect to the same db cluster, so this is also accounting for scalability. Only uncertainity in reliablity is coming from the Open Library Search API which we anticipate to be performant and reliable.
 
-## 4. Data Model ER Model
+## 4. Data Modelling
 
-### Entities:
+### Entity Relationship Model
 1. Book:
     - date
     - id
@@ -98,3 +98,38 @@ Apache Cassandra is a super reliable database, becaues its not just a single nod
     - end_date
     - rating
 ![Entity Relationship Model](assets/er_model.png)
+*Entity Relationship Model (rough)*
+
+### What are the queries we need to perform on our Cassandra database and their Chebotko Diagrams for identifying the keys, sorting order, clustering info, etc:
+**⭐️ In Cassandra primary keys are hashed to a value which decides which partition to store the object into**
+1. `books_by_id()`
+`book_id` -> Primary key -> 1 record partition
+
+
+![Entity Relationship Model](assets/books_by_id.png)
+we won't have a authorId as a foreign key because this isn't a relational storage, we dont relate authorId with books by performing joins, because first joins are inefficient in large data and second we have duplicatitions
+
+2. `books_by_authorId()`
+![Entity Relationship Model](assets/books_by_authorId.png)
+`authorId` -> Primary Key -> many record partition
+**⭐️ Store all the books by a single author in the same partition to optimize fetching**
+`published_date` -> make it into a clustering column so that its stored sorted, and we dont need to sort it at runtime
+
+3. `userBooks_by_bookId_and_userId()`
+`userId` and `bookId` -> Primary key
+![Entity Relationship Model](assets/books_by_userId_and_bookId.png)
+
+
+4. `userBooks_by_userId()`
+`userId` -> Primary key
+
+![Entity Relationship Model](assets/books_by_userId.png)
+
+
+We only care about how we fetch the data not how the data is stored in its ideal state because the data will be replicated and we have large amounts of data
+
+Some considerations:
+1. Is it possible for there to be too many books in one partition or hotspots in our parittioning strategy?
+Ans: Realistitcally speaking one author cannot write so many books that it overloads our partition and a reader (user) cannot read so many books either even though people do read lots of books but its isn't much here, so unless there is a malicious actor try to overload a partiiton by garbage data (which can be prevented by adding some application controls to handlle that, rate limiting) there should not be hotspots.
+2. What if in the future we have a lot more users and hotspots start to occur?
+Ans: We can solve this by having a new data element such as `year` and partition based on that to ensure almost consistent partition, more sophisticated partition strategies can be developed as well.
