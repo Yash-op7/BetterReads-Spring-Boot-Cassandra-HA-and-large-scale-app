@@ -146,5 +146,14 @@ Some considerations:
 ### Some CQL queries (personal recap):
 - `describe keyspaces;`
 ![cql_example1](assets/cql_example1.png)
-- `describe keyspace_name`
+
+- `describe {keyspace_name}`
 ![cql_example1](assets/cql_example2.png)
+⭐️ We see that it has a default keyspace with a replication factor of 3, this is the industry standard value of replicaiton factor, because you cannot have every data object in every partition to one single node, so if one node goes down, we can still fetch the data, the standard is a replication factor of 3, so any write is done to one node and Cassandra in the backgroudn propagates to 2 other nodes.
+
+- `use {keyspace_name};` and `describe tables;`
+![cql_example1](assets/cql_example3.png)
+⭐️ Note that when we use the `use {keyspace_name}` command the prompt changes.
+
+**We can create tables using CQL but what we'll do is create a Spring Boot application and use Spring Data Cassandra to create entity objects and have that create those tables for me similar to ORM, but here its not object relational mapping, it is more similar to the @AddEntity annotation in Hibernate, create the entity and let it define the schema for it.**
+
